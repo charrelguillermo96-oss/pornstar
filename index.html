@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111111">
+<title>AfterDark | Video Hub</title>
+
+<style>
+:root {
+  --bg:#111111;
+  --panel:#1b1b1b;
+  --panel2:#242424;
+  --orange:#ff9000;
+  --text:#ffffff;
+  --muted:#aaaaaa;
+  --border:#333333;
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input {
+  font:inherit;
+}
+
+button,a {
+  cursor:pointer;
+}
+
+a {
+  color:inherit;
+  text-decoration:none;
+}
+
+header {
+  background:#080808;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav {
+  max-width:1250px;
+  margin:auto;
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.logo {
+  font-size:27px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.logo span {
+  color:var(--orange);
+}
+
+.search {
+  flex:1;
+  max-width:500px;
+  display:flex;
+}
+
+.search input {
+  width:100%;
+  padding:12px 15px;
+  background:#222;
+  border:1px solid #444;
+  color:white;
+  border-radius:7px 0 0 7px;
+  outline:none;
+}
+
+.search input:focus {
+  border-color:var(--orange);
+}
+
+.search button {
+  background:var(--orange);
+  border:0;
+  padding:0 18px;
+  font-weight:bold;
+  border-radius:0 7px 7px 0;
+}
+
+.nav-actions {
+  display:flex;
+  gap:10px;
+}
+
+.btn {
+  padding:11px 17px;
+  border:0;
+  border-radius:6px;
+  font-weight:bold;
+}
+
+.btn-orange {
+  background:var(--orange);
+  color:#111;
+}
+
+.btn-dark {
+  background:#292929;
+  color:white;
+  border:1px solid #444;
+}
+
+.btn:hover {
+  filter:brightness(1.12);
+}
+
+.hero {
+  max-width:1250px;
+  margin:25px auto;
+  padding:45px 25px;
+  background:linear-gradient(120deg,#292015,#171717 65%);
+  border:1px solid #49351c;
+  border-radius:12px;
+}
+
+.hero small {
+  color:var(--orange);
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.hero h1 {
+  font-size:clamp(30px,5vw,48px);
+  margin:12px 0;
+}
+
+.hero p {
+  color:var(--muted);
+  max-width:600px;
+  line-height:1.7;
+}
+
+.hero .btn {
+  margin-top:20px;
+}
+
+.container {
+  max-width:1250px;
+  margin:35px auto;
+  padding:0 20px;
+}
+
+.section-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.section-title h2 {
+  font-size:23px;
+}
+
+.section-title span {
+  color:var(--orange);
+}
+
+.categories {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.category {
+  padding:10px 17px;
+  border-radius:25px;
+  border:1px solid #444;
+  background:var(--panel);
+  color:white;
+}
+
+.category.active,
+.category:hover {
+  background:var(--orange);
+  color:#111;
+  border-color:var(--orange);
+}
+
+.video-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.video-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:9px;
+  overflow:hidden;
+  transition:.2s;
+}
+
+.video-card:hover {
+  transform:translateY(-4px);
+  border-color:var(--orange);
+}
+
+.thumbnail {
+  height:180px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  font-size:55px;
+  overflow:hidden;
+}
+
+.thumb1 {background:linear-gradient(135deg,#3c2415,#9b5420);}
+.thumb2 {background:linear-gradient(135deg,#152b40,#376b85);}
+.thumb3 {background:linear-gradient(135deg,#38213f,#874b78);}
+.thumb4 {background:linear-gradient(135deg,#173c32,#428b65);}
+.thumb5 {background:linear-gradient(135deg,#3b3219,#a78c35);}
+.thumb6 {background:linear-gradient(135deg,#26233e,#6559a0);}
+
+.duration {
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  background:#000b;
+  padding:4px 8px;
+  font-size:12px;
+  border-radius:4px;
+}
+
+.video-info {
+  padding:15px;
+}
+
+.video-info h3 {
+  font-size:16px;
+  margin-bottom:8px;
+}
+
+.video-info p {
+  font-size:13px;
+  color:var(--muted);
+}
+
+.video-info button {
+  margin-top:13px;
+  width:100%;
+}
+
+.tag {
+  display:inline-block;
+  color:var(--orange);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.empty {
+  display:none;
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+}
+
+footer {
+  margin-top:60px;
+  padding:30px 20px;
+  border-top:1px solid var(--border);
+  text-align:center;
+  color:var(--muted);
+  line-height:2;
+}
+
+footer strong {
+  color:var(--orange);
+}
+
+/* MODALS */
+
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000d;
+  z-index:30;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.modal.show {
+  display:flex;
+}
+
+.modal-box {
+  background:#202020;
+  border:1px solid #444;
+  border-radius:12px;
+  width:100%;
+  max-width:430px;
+  padding:25px;
+  position:relative;
+}
+
+.modal-box h2 {
+  margin-bottom:18px;
+}
+
+.close {
+  position:absolute;
+  right:17px;
+  top:13px;
+  background:none;
+  color:white;
+  border:0;
+  font-size:25px;
+}
+
+.modal-box input {
+  width:100%;
+  padding:13px;
+  margin:8px 0;
+  border:1px solid #444;
+  border-radius:6px;
+  background:#111;
+  color:white;
+}
+
+.modal-box .btn {
+  width:100%;
+  margin-top:12px;
+}
+
+.modal-box p {
+  color:var(--muted);
+  font-size:13px;
+  margin-top:12px;
+  line-height:1.5;
+}
+
+.preview {
+  width:100%;
+  height:200px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#39220d,#80501b);
+  font-size:65px;
+  border-radius:8px;
+  margin:15px 0;
+}
+
+@media(max-width:800px) {
+  .video-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .hero {
+    margin:15px;
+  }
+
+  .nav {
+    flex-wrap:wrap;
+  }
+
+  .search {
+    order:3;
+    max-width:none;
+    flex-basis:100%;
+  }
+}
+
+@media(max-width:520px) {
+  .video-grid {
+    grid-template-columns:1fr;
+  }
+
+  .thumbnail {
+    height:190px;
+  }
+
+  .nav-actions .btn {
+    padding:9px 11px;
+    font-size:12px;
+  }
+
+  .logo {
+    font-size:23px;
+  }
+
+  .hero {
+    padding:30px 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav class="nav">
+
+    <a href="#" class="logo">
+      After<span>Dark</span>
+    </a>
+
+    <form class="search" id="searchForm">
+      <input type="search" id="searchInput"
+        placeholder="Search videos..." aria-label="Search videos">
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="nav-actions">
+      <button class="btn btn-dark"
+        onclick="openModal('loginModal')">Login</button>
+
+      <button class="btn btn-orange"
+        onclick="openModal('registerModal')">Sign up</button>
+    </div>
+
+  </nav>
+</header>
+
+<section class="hero">
+
+  <small>WELCOME TO AFTERDARK</small>
+
+  <h1>Discover. Watch. Explore.</h1>
+
+  <p>
+    Explore a collection of fictional video previews,
+    creative projects, entertainment demos, and digital content.
+    Enjoy a modern streaming-style experience.
+  </p>
+
+  <button class="btn btn-orange"
+    onclick="document.getElementById('videos').scrollIntoView({behavior:'smooth'})">
+    Explore Videos →
+  </button>
+
+</section>
+
+<main class="container" id="videos">
+
+  <div class="section-title">
+    <h2>Explore Videos <span>●</span></h2>
+    <span id="videoCount">6 videos</span>
+  </div>
+
+  <div class="categories">
+
+    <button class="category active" data-category="All">All</button>
+    <button class="category" data-category="Entertainment">Entertainment</button>
+    <button class="category" data-category="Music">Music</button>
+    <button class="category" data-category="Gaming">Gaming</button>
+    <button class="category" data-category="Lifestyle">Lifestyle</button>
+
+  </div>
+
+  <div class="video-grid" id="videoGrid">
+
+    <article class="video-card"
+      data-category="Entertainment"
+      data-title="Creative Studio Showcase">
+
+      <div class="thumbnail thumb1">
+        🎬
+        <span class="duration">05:20</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">ENTERTAINMENT</span>
+        <h3>Creative Studio Showcase</h3>
+        <p>Demo Channel · 1.2K views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Creative Studio Showcase','Entertainment')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+    <article class="video-card"
+      data-category="Music"
+      data-title="Music and Sound Collection">
+
+      <div class="thumbnail thumb2">
+        🎧
+        <span class="duration">08:15</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">MUSIC</span>
+        <h3>Music and Sound Collection</h3>
+        <p>Demo Channel · 950 views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Music and Sound Collection','Music')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+    <article class="video-card"
+      data-category="Gaming"
+      data-title="Gaming Highlights">
+
+      <div class="thumbnail thumb3">
+        🎮
+        <span class="duration">12:40</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">GAMING</span>
+        <h3>Gaming Highlights</h3>
+        <p>Demo Channel · 2.5K views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Gaming Highlights','Gaming')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+    <article class="video-card"
+      data-category="Lifestyle"
+      data-title="Daily Lifestyle Inspiration">
+
+      <div class="thumbnail thumb4">
+        🌿
+        <span class="duration">06:35</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">LIFESTYLE</span>
+        <h3>Daily Lifestyle Inspiration</h3>
+        <p>Demo Channel · 780 views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Daily Lifestyle Inspiration','Lifestyle')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+    <article class="video-card"
+      data-category="Entertainment"
+      data-title="Behind the Scenes">
+
+      <div class="thumbnail thumb5">
+        🎥
+        <span class="duration">09:10</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">ENTERTAINMENT</span>
+        <h3>Behind the Scenes</h3>
+        <p>Demo Channel · 1.8K views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Behind the Scenes','Entertainment')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+    <article class="video-card"
+      data-category="Gaming"
+      data-title="Game Night Experience">
+
+      <div class="thumbnail thumb6">
+        🕹️
+        <span class="duration">14:25</span>
+      </div>
+
+      <div class="video-info">
+        <span class="tag">GAMING</span>
+        <h3>Game Night Experience</h3>
+        <p>Demo Channel · 1.1K views</p>
+        <button class="btn btn-orange"
+          onclick="previewVideo('Game Night Experience','Gaming')">
+          Watch Preview
+        </button>
+      </div>
+
+    </article>
+
+  </div>
+
+  <div class="empty" id="emptyMessage">
+    <h3>No videos found.</h3>
+    <p>Try another search or category.</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="logo">After<span>Dark</span></div>
+  <p>A fictional video streaming website demonstration.</p>
+  <p>© <span id="year"></span> AfterDark. All rights reserved.</p>
+  <p>Demo content only · No real video uploads or accounts.</p>
+</footer>
+
+<!-- LOGIN MODAL -->
+
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <button class="close"
+      onclick="closeModal('loginModal')">×</button>
+
+    <h2>Welcome Back</h2>
+
+    <form onsubmit="demoLogin(event)">
+      <input type="email" placeholder="Email address" required>
+      <input type="password" placeholder="Password" required>
+      <button class="btn btn-orange" type="submit">Login</button>
+    </form>
+
+    <p>This is a visual demonstration. No account is created or stored.</p>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+
+<div class="modal" id="registerModal">
+  <div class="modal-box">
+    <button class="close"
+      onclick="closeModal('registerModal')">×</button>
+
+    <h2>Create Account</h2>
+
+    <form onsubmit="demoRegister(event)">
+      <input type="text" placeholder="Full name" required>
+      <input type="email" placeholder="Email address" required>
+      <input type="password" placeholder="Password" minlength="6" required>
+      <button class="btn btn-orange" type="submit">Create Account</button>
+    </form>
+
+    <p>This is a visual demonstration. Never enter your real password.</p>
+  </div>
+</div>
+
+<!-- VIDEO PREVIEW MODAL -->
+
+<div class="modal" id="previewModal">
+  <div class="modal-box">
+
+    <button class="close"
+      onclick="closeModal('previewModal')">×</button>
+
+    <h2 id="previewTitle">Video Preview</h2>
+
+    <div class="preview">▶</div>
+
+    <p id="previewDescription"></p>
+
+    <p>This is a fictional video preview. No actual video is playing.</p>
+
+    <button class="btn btn-orange"
+      onclick="closeModal('previewModal')">Close Preview</button>
+
+  </div>
+</div>
+
+<script>
+
+// Current year
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+// Search and category filters
+let currentCategory = "All";
+
+function filterVideos() {
+  const query = document.getElementById("searchInput")
+    .value.toLowerCase().trim();
+
+  const cards = document.querySelectorAll(".video-card");
+  let visible = 0;
+
+  cards.forEach(card => {
+    const title = card.dataset.title.toLowerCase();
+    const category = card.dataset.category;
+
+    const matchesSearch = title.includes(query);
+    const matchesCategory =
+      currentCategory === "All" ||
+      category === currentCategory;
+
+    const show = matchesSearch && matchesCategory;
+
+    card.style.display = show ? "" : "none";
+
+    if(show) visible++;
+  });
+
+  document.getElementById("videoCount").textContent =
+    visible + (visible === 1 ? " video" : " videos");
+
+  document.getElementById("emptyMessage").style.display =
+    visible === 0 ? "block" : "none";
+}
+
+document.getElementById("searchForm")
+  .addEventListener("submit", function(event) {
+    event.preventDefault();
+    filterVideos();
+  });
+
+document.getElementById("searchInput")
+  .addEventListener("input", filterVideos);
+
+// Category buttons
+document.querySelectorAll(".category")
+  .forEach(button => {
+
+    button.addEventListener("click", function() {
+
+      document.querySelectorAll(".category")
+        .forEach(item => item.classList.remove("active"));
+
+      this.classList.add("active");
+
+      currentCategory = this.dataset.category;
+
+      filterVideos();
+    });
+
+  });
+
+// Modal functions
+function openModal(id) {
+  document.getElementById(id).classList.add("show");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+function previewVideo(title, category) {
+  document.getElementById("previewTitle").textContent = title;
+
+  document.getElementById("previewDescription").textContent =
+    "Category: " + category + " | Fictional video preview.";
+
+  openModal("previewModal");
+}
+
+// Demo account forms
+function demoLogin(event) {
+  event.preventDefault();
+
+  alert("Demo only: Login is not connected to a database.");
+
+  event.target.reset();
+  closeModal("loginModal");
+}
+
+function demoRegister(event) {
+  event.preventDefault();
+
+  alert("Demo only: Registration is not connected to a database.");
+
+  event.target.reset();
+  closeModal("registerModal");
+}
+
+// Close modal when clicking outside
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", function(event) {
+    if(event.target === modal) {
+      modal.classList.remove("show");
+    }
+  });
+});
+
+// Escape key closes open modal
+document.addEventListener("keydown", function(event) {
+  if(event.key === "Escape") {
+    document.querySelectorAll(".modal.show")
+      .forEach(modal => modal.classList.remove("show"));
+  }
+});
+
+</script>
+
+</body>
+</html>
